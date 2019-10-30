@@ -1,30 +1,39 @@
 import pandas as pd
 
+import argparse
 import my_impl
 import scikit_impl
+import sys
 
 
 def main():
-    print("\n-- Running the main file --")
-    df = prepare_data()
+    file = setup_cli()
+    print("\nRunning the program on the file %s:" % file)
+    df = prepare_data(file)
     my_impl.run_classifier(df)
     scikit_impl.run_knn(df)
 
 
-def prepare_data():
-    print("\n-- Preparing the data --")
+def setup_cli():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input",
+                        help="The path to the csv file, default is data/hazelnuts.txt",
+                        default="data/hazelnuts.txt")
+    args = parser.parse_args()
+    return args.input
 
-    headers = ['sample_id', 'length', 'width', 'thickness',
-               'surface_area', 'mass', 'compactness', 'hardness',
-               'shell_top_radius', 'water_content', 'carbohydrate_content', 'variety']
 
-    df = pd.read_csv('data/hazelnuts.txt', sep='\t', header=None)
-    df = df.transpose()
-    df.columns = headers
-    df = df.drop(columns=['sample_id'])
+def prepare_data(file):
+    print("Preparing the data")
 
-    print("Finished preparing")
-    return df
+    try:
+        df = pd.read_csv(file, sep='\t', header=None)
+        df = df.transpose()
+        df.drop(df.columns[0], axis=1, inplace=True)
+        print("Finished preparing data")
+        return df
+    except:
+        sys.exit("File: %s cannot be found \nExiting program" % file)
 
 
 if __name__ == '__main__':

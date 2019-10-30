@@ -1,25 +1,42 @@
+import pandas as pd
+
 from sklearn.model_selection import train_test_split
 
+
 def run_classifier(df):
-    print("\n-- Running my implementation --")
-    X = df.drop(columns=['variety'])
-    y = df['variety'].values
+    print("\nRunning my implementation:")
+    X = df.drop(df.columns[len(df.columns) - 1], axis=1)
+    y = df.iloc[:, len(df.columns) - 1]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     classifier = MyClassifier()
     classifier.fit(X_train, y_train)
-    predicted_classes = classifier.predict(X_test)
+    predicted = classifier.predict(X_test)
 
-    correct_classes = y_test.tolist()
-    score = 0
-    for pred, correct in zip(predicted_classes, correct_classes):
-        if pred == correct:
-            score += 1
+    correct = y_test.tolist()
+    score = []
+    for pred, corr in zip(predicted, correct):
+        if pred == corr:
+            score.append(1)
+        else:
+            score.append(0)
 
-    print("Accuracy is: ")
-    print(score / len(predicted_classes))
+    export_results(correct, predicted, score)
+    accuracy = sum(score) / len(predicted)
+    print("Accuracy is: {0:.2f}".format(accuracy))
 
+
+def export_results(correct, predicted, score):
+    data = {
+        'actual': correct,
+        'predicted': predicted,
+        'correct': score
+    }
+    df = pd.DataFrame(data)
+    df.to_csv(r'data/predictions.csv')
+
+    print("Results have been exported to data/predictions.csv")
 
 
 class MyClassifier:
