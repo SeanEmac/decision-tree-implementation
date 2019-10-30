@@ -6,6 +6,6 @@ Will export the predictions to `data/predictions.csv`.
    - Clone this repo
    - `cd` into project
    - Install requirements `pip install -r requirements.txt`
-   - `python main.py -h` to see available options
-   - `python main.py` to run the algorithm on the hazelnuts.txt dataset
-   - Run `python main.py --input path/to/your/file.txt` to use your own dataset
+   - `python main.py` to launch the GUI
+   - Choose an appropriate file to run the algorithm on
+   - Results will be displayed

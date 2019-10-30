@@ -1,14 +1,17 @@
 import pandas as pd
+import sys
 
 from sklearn.model_selection import train_test_split
 
 
 def run_classifier(df):
-    print("\nRunning my implementation:")
-    X = df.drop(df.columns[len(df.columns) - 1], axis=1)
-    y = df.iloc[:, len(df.columns) - 1]
+    try:
+        X = df.drop(df.columns[len(df.columns) - 1], axis=1)
+        y = df.iloc[:, len(df.columns) - 1]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    except:
+        sys.exit("There was a problem processing the file")
 
     classifier = MyClassifier()
     classifier.fit(X_train, y_train)
@@ -24,7 +27,9 @@ def run_classifier(df):
 
     export_results(correct, predicted, score)
     accuracy = sum(score) / len(predicted)
-    print("Accuracy is: {0:.2f}".format(accuracy))
+    return {
+        'accuracy': accuracy
+    }
 
 
 def export_results(correct, predicted, score):
@@ -35,8 +40,6 @@ def export_results(correct, predicted, score):
     }
     df = pd.DataFrame(data)
     df.to_csv(r'data/predictions.csv')
-
-    print("Results have been exported to data/predictions.csv")
 
 
 class MyClassifier:

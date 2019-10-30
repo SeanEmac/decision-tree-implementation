@@ -19,5 +19,9 @@ def run_knn(df):
 
     cv_scores_knn = cross_val_score(knn, X, y, cv=10)
 
-    print('10 fold score: {}'.format(np.mean(cv_scores_knn)))
-    print(confusion_matrix(y_test, knn_predict))
+    # print('10 fold score: {}'.format(np.mean(cv_scores_knn)))
+    # print(confusion_matrix(y_test, knn_predict))
+    return {
+        'accuracy': np.mean(cv_scores_knn),
+        'confusion': confusion_matrix(y_test, knn_predict)
+    }
