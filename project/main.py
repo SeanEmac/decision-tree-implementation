@@ -1,9 +1,8 @@
-import pandas as pd
-
 import easygui
-import my_impl
-import scikit_impl
+import pandas as pd
 import sys
+
+from project import my_impl, scikit_impl
 
 
 def main():
