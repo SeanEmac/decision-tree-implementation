@@ -9,37 +9,51 @@ def run_classifier(df):
         X = df.drop(df.columns[len(df.columns) - 1], axis=1)
         y = df.iloc[:, len(df.columns) - 1]
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
     except:
         sys.exit("There was a problem processing the file")
 
+    results = []
+    for i in range(10):
+        results.append(calculate_results(i, X, y))
+
+    accuracies = []
+    for result in results:
+        accuracies.append(sum(result['score']) / len(result['predicted']))
+
+    return accuracies
+
+
+def calculate_results(i, X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
     classifier = MyClassifier()
     classifier.fit(X_train, y_train)
     predicted = classifier.predict(X_test)
 
-    correct = y_test.tolist()
+    actual = y_test.tolist()
     score = []
-    for pred, corr in zip(predicted, correct):
+    for pred, corr in zip(predicted, actual):
         if pred == corr:
             score.append(1)
         else:
             score.append(0)
 
-    export_results(correct, predicted, score)
-    accuracy = sum(score) / len(predicted)
+    export_results(i, actual, predicted, score)
     return {
-        'accuracy': accuracy
-    }
-
-
-def export_results(correct, predicted, score):
-    data = {
-        'actual': correct,
         'predicted': predicted,
-        'correct': score
+        'actual': actual,
+        'score': score
     }
+
+
+def export_results(i, actual, predicted, score):
+    data = {
+        'actual': actual,
+        'predicted': predicted,
+        'score': score
+    }
+    filepath = 'data/results/predictions{0}.csv'.format(i + 1)
     df = pd.DataFrame(data)
-    df.to_csv(r'data/predictions.csv')
+    df.to_csv(filepath)
 
 
 class MyClassifier:
