@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 
-from project.c45 import C45
+from project.c4point5 import C4point5
 from sklearn.model_selection import train_test_split
 
 
@@ -26,7 +26,7 @@ def run_classifier(df):
 
 def calculate_results(i, X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
-    classifier = C45()
+    classifier = C4point5()
     classifier.fit(X_train, y_train)
     predicted = classifier.predict(X_test)
 
