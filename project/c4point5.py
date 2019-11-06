@@ -1,12 +1,12 @@
 from project import utils
 
-
 class TreeNode:
 
-    def __init__(self, data, children=[]):
+    def __init__(self, data=None, children=[], threshold=None, is_leaf=False):
         self.data = data
         self.children = children
-        self.threshold = 15.00
+        self.threshold = threshold
+        self.is_leaf = is_leaf
 
 
 class C4point5:
@@ -16,12 +16,21 @@ class C4point5:
         self.tree = None
 
     def fit(self, X_train, y_train):
-        self.tree = self.build_tree(X_train, y_train)
+        """
+            For now, lets only consider the first attribute 'length'
+        """
+
+        length = X_train.iloc[:, 0]
+        length = length.values.tolist()
+        y_train = y_train.values.tolist()
+
+        self.tree = self.build_tree(length, y_train)
 
 
-    def build_tree(self, X_train, y_train):
-        root = TreeNode('One level tree', ['c_avellana', 'c_americana'])
-        return root
+    def build_tree(self, data, classes):
+        class_counts = utils.count_classes(classes)
+        majority = utils.majority_class(classes)
+        return TreeNode('Root Node', ['c_americana', 'c_cornuta'], 15.00, True)
 
 
     def predict(self, X_test):

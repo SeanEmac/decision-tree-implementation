@@ -9,8 +9,8 @@ def calc_entropy(y):
         where proportion is (number of occurrences / total number of values)
     """
 
-    total_count = y.count()
-    class_counts = y.value_counts()
+    total_count = len(y)
+    class_counts = count_classes(y)
     entropy = 0
 
     for item in class_counts:
@@ -20,9 +20,33 @@ def calc_entropy(y):
     return entropy
 
 
-def calc_info_gain(attribute):
-    # Reduction in entropy from partitioning at this attribute
-    # total entropy of the set - sum of entropy for that value
+def calc_info_gain(full, left, right):
+    """
+        Reduction in entropy from partitioning at this attribute
+        total entropy of the set - sum of entropy for that value
+        entropy(full) - (prop(v) * Ent(v)) for each value v
+    """
+    propLeft = len(left) / len(full)
+    propRight = len(right) / len(full)
+    full_entropy = calc_entropy(full)
+    info_gain = full_entropy - (propLeft * calc_entropy(left)
+                                - propRight * calc_entropy(right))
 
-    info_gain = 1
     return info_gain
+
+
+def majority_class(y):
+    classes = count_classes(y)
+    return max(classes, key=classes.get)
+
+
+def count_classes(y):
+    class_counts = {}
+
+    for c in y:
+        if c in class_counts:
+            class_counts[c] = class_counts[c] + 1
+        else:
+            class_counts[c] = 1
+
+    return class_counts
