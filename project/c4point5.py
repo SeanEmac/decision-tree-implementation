@@ -1,12 +1,14 @@
 from project import utils
 
+
 class TreeNode:
 
-    def __init__(self, data=None, children=[], threshold=None, is_leaf=False):
-        self.data = data
+    def __init__(self, data=None, children=[], threshold=None, is_leaf=False, column=0):
+        self.prediction = data
         self.children = children
         self.threshold = threshold
         self.is_leaf = is_leaf
+        self.column = column
 
 
 class C4point5:
@@ -16,22 +18,28 @@ class C4point5:
         self.tree = None
 
     def fit(self, X_train, y_train):
-        """
-            For now, lets only consider the first attribute 'length'
-        """
-
-        length = X_train.iloc[:, 0]
-        length = length.values.tolist()
+        training_data = X_train.values.tolist()
         y_train = y_train.values.tolist()
+        # Join the lists and transpose them
+        for idx, feat in enumerate(training_data):
+            feat.append(y_train[idx])
 
-        self.tree = self.build_tree(length, y_train)
+        training_data = list(map(list, zip(*training_data)))
 
+        self.tree = self.build_tree(training_data)
 
-    def build_tree(self, data, classes):
-        class_counts = utils.count_classes(classes)
-        majority = utils.majority_class(classes)
-        return TreeNode('Root Node', ['c_americana', 'c_cornuta'], 15.00, True)
+    def build_tree(self, training_data):
+        """
+            Just get the best once, no recursion yet
+        """
+        gain, threshold, column, splits = utils.get_best_gain(training_data)
+        output = dict([(0, 'length'), (1, 'width'), (2, 'thick'), (3, 'surface'), (4, 'mass'),
+                       (5, 'compact'), (6, 'hardness'), (7, 'shell top'), (8, 'water'), (9, 'carb')])
 
+        print('Best gain is: {}'.format(gain))
+        print('Best threshold is: {}'.format(threshold))
+        print('Best column is: {}'.format(output[column]))
+        return TreeNode('root', ['c_americana','c_cornuta'], threshold, True, column)
 
     def predict(self, X_test):
         predictions = []
@@ -40,10 +48,9 @@ class C4point5:
 
         return predictions
 
-
     def predict_class(self, row):
         thresh = self.tree.threshold
-        val = float(row.iloc[0])
+        val = float(row.iloc[self.tree.column])
         if val < thresh:
             predicted = self.tree.children[0]
         else:
