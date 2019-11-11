@@ -57,13 +57,13 @@ def get_best_gain(training_data):
         Return the one that gives the highest information gain.
     """
     splits = []
+    gains = []
     best_gain = -999
     best_threshold = -999
     best_column = -999
 
     for idx in range(len(training_data)):
         if idx < (len(training_data) - 1):
-            # Hacked way of sorting
             training_data = list(map(list, zip(*training_data)))
             training_data.sort(key=lambda x: float(x[idx]))
             training_data = list(map(list, zip(*training_data)))
@@ -71,26 +71,32 @@ def get_best_gain(training_data):
             for i in range(len(feature) - 1): # -1 because we check + 1
                 if feature[i] != feature[i + 1]:
                     threshold = (feature[i] + feature[i + 1]) / 2
-                    left = []
-                    right = []
-                    for j in range(len(feature)):
-                        # Split the data into 2 subsets
-                        if feature[j] > threshold:
-                            temp = []
-                            for ft in training_data:
-                                temp.append(ft[j])
-                            right.append(temp)
-                        else:
-                            temp = []
-                            for ft in training_data:
-                                temp.append(ft[j])
-                            left.append(temp)
-
-                    gain = calc_info_gain(training_data, list(map(list, zip(*left))), list(map(list, zip(*right))))
+                    splitss = fill_splits(threshold, feature, training_data)
+                    gain = calc_info_gain(training_data, list(map(list, zip(*splitss[0]))), list(map(list, zip(*splitss[1]))))
+                    gains.append(gain)
                     if gain >= best_gain:
-                        splits = [list(map(list, zip(*left))), list(map(list, zip(*right)))]
+                        splits = [list(map(list, zip(*splitss[0]))), list(map(list, zip(*splitss[1])))]
                         best_gain = gain
                         best_threshold = threshold
                         best_column = idx
 
     return best_gain, best_threshold, best_column, splits
+
+
+def fill_splits(threshold, feature, training_data):
+    right = []
+    left = []
+    for j in range(len(feature)):
+        # Split the data into 2 subsets
+        if feature[j] > threshold:
+            temp = []
+            for ft in training_data:
+                temp.append(ft[j])
+            right.append(temp)
+        else:
+            temp = []
+            for ft in training_data:
+                temp.append(ft[j])
+            left.append(temp)
+
+    return [left, right]

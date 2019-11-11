@@ -31,6 +31,7 @@ def calculate_results(i, X, y):
     predicted = classifier.predict(X_test)
 
     actual = y_test.tolist()
+    shell_top = X_test[8].tolist()
     score = []
     for pred, corr in zip(predicted, actual):
         if pred == corr:
@@ -38,18 +39,20 @@ def calculate_results(i, X, y):
         else:
             score.append(0)
 
-    export_results(i, actual, predicted, score)
+    export_results(i, actual, shell_top, predicted, score)
     return {
         'predicted': predicted,
         'actual': actual,
+        'shell_top': shell_top,
         'score': score
     }
 
 
-def export_results(i, actual, predicted, score):
+def export_results(i, actual, shell_top, predicted, score):
     data = {
         'actual': actual,
         'predicted': predicted,
+        'shell_top': shell_top,
         'score': score
     }
     filepath = 'data/results/predictions{0}.csv'.format(i + 1)
