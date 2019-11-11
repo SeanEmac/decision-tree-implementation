@@ -6,6 +6,12 @@ from project import my_impl, scikit_impl
 
 
 def main():
+    """
+        Driver method for the application, create a simple GUI to select the file,
+        parse the data and pass the same data frame to mine and scikit's implementation.
+        Compare the 2 results.
+
+    """
     file = easygui.fileopenbox("Please choose a file eg. hazelnuts.txt")
     df = prepare_data(file)
     my_results = my_impl.run_classifier(df)
@@ -14,6 +20,10 @@ def main():
 
 
 def compare_results(file, my_results, scikit_results):
+    """
+        Format the accuracies to 2 decimal places
+        Open a GUI so print the results of both algorithms
+    """
     formatted_results = ""
     for accuracy in my_results:
         formatted_results += ("%.2f " % accuracy)
@@ -30,6 +40,10 @@ def compare_results(file, my_results, scikit_results):
 
 
 def prepare_data(file):
+    """
+        Read in the text data file, if there are any problems it should
+        gracefully exit
+    """
     try:
         df = pd.read_csv(file, sep='\t', header=None)
         df = df.transpose()

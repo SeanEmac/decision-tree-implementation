@@ -7,6 +7,11 @@ from sklearn.model_selection import cross_val_score
 
 
 def run_knn(df):
+    """
+        Standard Scikit implementation of a decision tree,
+        return the cross validated accuracy and confusion matrix
+        so that we can compare it with my implementation.
+    """
     print("\nRunning scikit-learn implementation:")
     X = df.drop(df.columns[len(df.columns) - 1], axis=1)
     y = df.iloc[:, len(df.columns) - 1]

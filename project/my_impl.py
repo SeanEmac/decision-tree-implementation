@@ -1,11 +1,14 @@
 import pandas as pd
 import sys
 
-from project.c4point5 import C4point5
+from project.c45 import C45
 from sklearn.model_selection import train_test_split
 
 
 def run_classifier(df):
+    """
+        Run calculate_results 10 times and print the results
+    """
     try:
         X = df.drop(df.columns[len(df.columns) - 1], axis=1)
         y = df.iloc[:, len(df.columns) - 1]
@@ -25,37 +28,29 @@ def run_classifier(df):
 
 
 def calculate_results(i, X, y):
+    """
+        Use train_test_split from scikit to shuffle and split the data
+        into training and test.
+    """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
-    classifier = C4point5()
+    classifier = C45()
     classifier.fit(X_train, y_train)
     predicted = classifier.predict(X_test)
 
     actual = y_test.tolist()
-    shell_top = X_test[8].tolist()
     score = []
     for pred, corr in zip(predicted, actual):
-        if pred == corr:
-            score.append(1)
-        else:
-            score.append(0)
+        score.append(1) if pred == corr else score.append(0)
 
-    export_results(i, actual, shell_top, predicted, score)
-    return {
-        'predicted': predicted,
-        'actual': actual,
-        'shell_top': shell_top,
-        'score': score
-    }
+    results = {'actual': actual, 'predicted': predicted, 'score': score}
+    export_results(i, results)
+    return results
 
 
-def export_results(i, actual, shell_top, predicted, score):
-    data = {
-        'actual': actual,
-        'predicted': predicted,
-        'shell_top': shell_top,
-        'score': score
-    }
+def export_results(i, results):
+    """
+        Print each of the 10 runs to csv files
+    """
     filepath = 'data/results/predictions{0}.csv'.format(i + 1)
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(results)
     df.to_csv(filepath)
-
