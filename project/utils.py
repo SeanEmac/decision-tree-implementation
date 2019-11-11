@@ -1,3 +1,4 @@
+# utils.py
 import math
 """
     This file holds helper methods needed to implement C4.5
@@ -65,12 +66,12 @@ def count_classes(data):
 def get_best_gain(dataset_S):
     """
         For each attribute, for each value, calculate the information gain if we did split on this value
-        if it is higher than the previous best, this value now becomes the threshold
+        if it is higher than the previous best, this value now becomes the best value
         Return the one that gives the highest information gain.
     """
     best_split = []
     best_gain = -999
-    best_threshold = -999
+    best_value = -999
     best_attribute = -999
 
     # For each attribute
@@ -82,19 +83,19 @@ def get_best_gain(dataset_S):
         for row_idx in range(len(attribute) - 1):
             if attribute[row_idx] != attribute[row_idx + 1]:
                 # Mid point between 2 values
-                threshold = (attribute[row_idx] + attribute[row_idx + 1]) / 2
-                split = split_data_set(attribute, threshold, dataset_S)
+                value = (attribute[row_idx] + attribute[row_idx + 1]) / 2
+                split = split_data_set(attribute, value, dataset_S)
                 # See what gain we would get if we split on this attribute & value
                 gain = calc_info_gain(dataset_S, split[0], split[1])
 
                 if gain > best_gain:
                     # If this new gain is the best, save its information
                     best_gain = gain
-                    best_threshold = threshold
+                    best_value = value
                     best_attribute = col_idx
                     best_split = split
 
-    return best_gain, best_threshold, best_attribute, best_split
+    return best_gain, best_value, best_attribute, best_split
 
 
 def sort_by_column(dataset_S, column_idx):
@@ -108,15 +109,15 @@ def sort_by_column(dataset_S, column_idx):
     return list(map(list, zip(*dataset_S)))
 
 
-def split_data_set(attribute, threshold, dataset_S):
+def split_data_set(attribute, value, dataset_S):
     """
-        Given a column index of an attribute and a threshold value to split on,
-        partition the data into 2 parts, less than and greater than the threshold value
+        Given a column index of an attribute and a value to split on,
+        partition the data into 2 parts, less than and greater than the value
     """
     less_than = []
     greater_than = []
     for rowIdx in range(len(attribute)):
-        if attribute[rowIdx] > threshold:
+        if attribute[rowIdx] > value:
             temp = []
             for ft in dataset_S:
                 temp.append(ft[rowIdx])

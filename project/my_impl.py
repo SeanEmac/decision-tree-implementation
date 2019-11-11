@@ -17,6 +17,7 @@ def run_classifier(df):
         sys.exit("There was a problem processing the file")
 
     results = []
+    # This will run train_test_split 10 times
     for i in range(10):
         results.append(calculate_results(i, X, y))
 

@@ -1,8 +1,9 @@
+# C45.py
 from project import utils
 
 
 class TreeNode:
-    def __init__(self, is_leaf=False, prediction=None,  threshold=None, column=0, less=None, greater=None):
+    def __init__(self, is_leaf=False, prediction=None,  value=None, column=0, less=None, greater=None):
         """
             This TreeNode represents a decision node in my Tree. It can be a leaf that predicts
             a type of nut, or it can hold the information needed to traverse.
@@ -12,7 +13,7 @@ class TreeNode:
         self.prediction = prediction
 
         # Data needed to traverse the tree
-        self.threshold = threshold
+        self.value = value
         self.column = column
 
         # Children of thi TreeNode
@@ -45,7 +46,7 @@ class C45:
             Create a leaf node predicting the only nut left.
 
             If there is more than one type of nut left, then we need to perform another split.
-            Get the best feature and threshold to split on, then recursively
+            Get the best feature and value to split on, then recursively
             call build_tree on the less and greater than subsets.
         """
         class_counts = utils.count_classes(training_data)
@@ -53,8 +54,8 @@ class C45:
             cls = list(class_counts.keys())[0]
             return TreeNode(True, cls)
         else:
-            gain, threshold, column, splits = utils.get_best_gain(training_data)
-            return TreeNode(False, None, threshold, column,
+            gain, value, column, splits = utils.get_best_gain(training_data)
+            return TreeNode(False, None, value, column,
                             self.build_tree(splits[0]), self.build_tree(splits[1]))
 
     def predict(self, X_test):
@@ -73,13 +74,13 @@ class C45:
             If we are at a leaf node, then return the predicted type of nut.
 
             Else, traverse the tree until we get to a leaf. We traverse the tree by
-            going left if the value to predict is less than the threshold, or right
+            going left if the value to predict is less than the value, or right
             if it's greater.
         """
         if tree_node.is_leaf:
             return tree_node.prediction
         else:
-            if float(row[tree_node.column + 1]) < tree_node.threshold:
+            if float(row[tree_node.column + 1]) < tree_node.value:
                 return self.predict_class(row, tree_node.less)
             else:
                 return self.predict_class(row, tree_node.greater)
