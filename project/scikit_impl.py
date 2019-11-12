@@ -19,7 +19,7 @@ def run_knn(df):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
 
-    dtree = tree.DecisionTreeClassifier()
+    dtree = tree.DecisionTreeClassifier(criterion='entropy', max_leaf_nodes=8)
     dtree.fit(X_train, y_train)
     dtree_predict = dtree.predict(X_test)
 

@@ -104,7 +104,7 @@ def split_data_set(attribute, value, dataset_S):
     less_than = []
     greater_than = []
     for rowIdx in range(len(attribute)):
-        if attribute[rowIdx] > value:
+        if attribute[rowIdx] >= value:
             temp = []
             for ft in dataset_S:
                 temp.append(ft[rowIdx])
