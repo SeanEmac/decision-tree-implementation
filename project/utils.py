@@ -76,9 +76,7 @@ def get_best_gain(dataset_S):
 
     # For each attribute
     for col_idx in range(len(dataset_S) - 1):
-        dataset_S = sort_by_column(dataset_S, col_idx)
         attribute = [float(i) for i in dataset_S[col_idx]]
-
         # Find the best value to split on
         for row_idx in range(len(attribute) - 1):
             if attribute[row_idx] != attribute[row_idx + 1]:
@@ -96,17 +94,6 @@ def get_best_gain(dataset_S):
                     best_split = split
 
     return best_gain, best_value, best_attribute, best_split
-
-
-def sort_by_column(dataset_S, column_idx):
-    """
-        Messy but it works, transpose the data so its easier to sort,
-        sort the whole data set based on attribute at column_idx.
-        Transpose again when we return it.
-    """
-    dataset_S = list(map(list, zip(*dataset_S)))
-    dataset_S.sort(key=lambda x: x[column_idx])
-    return list(map(list, zip(*dataset_S)))
 
 
 def split_data_set(attribute, value, dataset_S):

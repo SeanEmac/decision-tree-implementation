@@ -25,18 +25,35 @@ def compare_results(file, my_results, scikit_results):
         Format the accuracies to 2 decimal places
         Open a GUI so print the results of both algorithms
     """
-    formatted_results = ""
+    my_formatted_results = ""
     for accuracy in my_results:
-        formatted_results += ("%.2f " % accuracy)
+        my_formatted_results += ("%.2f " % accuracy)
 
     my_mean = (sum(my_results) / len(my_results))
+    my_high = max(my_results)
+    my_low = min(my_results)
+    my_diff = my_high - my_low
+
+    sci_formatted_results = ""
+    for accuracy in scikit_results['accuracy']:
+        sci_formatted_results += ("%.2f " % accuracy)
+
+    sci_high = max(scikit_results['accuracy'])
+    sci_low = min(scikit_results['accuracy'])
+    sci_diff = sci_high - sci_low
 
     easygui.msgbox('The learning algorithm has successfully run on {a}!\n\n'
-                   'Scores after 10 runs of my implementation:\n{b:}\n\n'
                    'Mean Accuracy of my implementation is: {c:.2f}\n'
-                   'Mean Accuracy of scikit implementation is: {d:.2f}\n\n'
+                   'Scores: {b:}\n'
+                   'Highest Accuracy: {d:.2f}\nLowest Accuracy: {e:.2f}\n'
+                   'Range: {f:.2f}\n\n'
+                   'Mean Accuracy of scikit implementation is: {g:.2f}\n'
+                   'Scores: {z:}\n'
+                   'Highest Accuracy: {h:.2f}\nLowest Accuracy: {i:.2f}\n'
+                   'Range: {j:.2f}\n\n'
                    'The predictions are available in the /data/results directory'
-                   .format(a=file, b=formatted_results, c=my_mean, d=scikit_results['mean_accuracy']),
+                   .format(a=file, b=my_formatted_results, c=my_mean, d=my_high, e=my_low, f=my_diff,
+                           g=scikit_results['mean_accuracy'], h=sci_high, i=sci_low, j=sci_diff, z=sci_formatted_results),
                    'Results')
 
 
